@@ -28,15 +28,40 @@ sudo mkdir /mnt/usb/recordings/cam2 >/dev/null
 sudo mkdir /mnt/usb/recordings/cam3 >/dev/null
 sudo mkdir /mnt/usb/recordings/cam4 >/dev/null
 
-echo "[INFO] Environnement created !"
+echo "${GREEN}[Success] Environnement created !\n\n${END}"
 
-echo "[INFO] Getting files... [0/2]"
+echo "${BLUE}[INFO] Setup the ENV variables...${END}"
+export CAM1="" CAM2="" CAM3="" CAM4=""
+idx=1
+ 
+for dev in /dev/video*; do
+    # Garder uniquement les USB
+    bus=$(v4l2-ctl -d "$dev" --info 2>/dev/null | grep "Bus info" | grep -i "usb")
+    if [ -n "$bus" ]; then
+        # Ignorer les nœuds metadata (impairs souvent, mais vérifier via cap)
+        cap=$(v4l2-ctl -d "$dev" --info 2>/dev/null | grep "Video Capture")
+        if [ -n "$cap" ]; then
+            eval "CAM$idx=$dev"
+            echo "CAM$idx=$dev"
+            idx=$((idx + 1))
+            [ $idx -gt 4 ] && break
+        fi
+    fi
+done
+ 
+if [ $idx -eq 1 ]; then
+    echo "${RED}[FAILED] Aucune caméra USB détectée${END}"
+fi
+
+echo "${GREEN}[Success] ENV variables set\n\n${END}"
+
+echo "${BLUE}[INFO] Getting files... [0/2]${END}"
 curl -o start_cam.sh https://raw.githubusercontent.com/MartinCalamel/Cpi-space-cam/refs/heads/main/start_cam.sh >/dev/null || echo "[failed]"
 chmod +x start_cam.sh
-echo "[INFO] Getting files... [1/2]"
+echo "${BLUE}[INFO] Getting files... [1/2]${END}"
 curl -o mediamtx.yml https://raw.githubusercontent.com/MartinCalamel/Cpi-space-cam/refs/heads/main/mediamtx.yml >/dev/null || echo "[failed]"
-echo "[INFO] Getting files... [2/2]\n\n"
+echo "${BLUE}[INFO] Getting files... [2/2]\n\n${END}"
 
-echo "[Success] Ended successfully !"
+echo "${GREEN}[Success] Ended successfully !${END}"
 
-echo "[INFO] To start recording : ./start_cam.sh"
+echo "${BLUE}[INFO] To start recording : ./start_cam.sh${END}"
