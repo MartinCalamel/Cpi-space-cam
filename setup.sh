@@ -57,7 +57,7 @@ else
     echo "export CAM2=$CAM2" >> ./.camera_env
     echo "export CAM3=$CAM3" >> ./.camera_env
     echo "export CAM4=$CAM4" >> ./.camera_env
-    chmod +x ~/.camera_env
+    chmod +x ./.camera_env
 fi
 
 echo "${GREEN}[Success] ENV variables set\n\n${END}"
