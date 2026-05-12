@@ -51,6 +51,13 @@ done
  
 if [ $idx -eq 1 ]; then
     echo "${RED}[FAILED] Aucune caméra USB détectée${END}"
+else
+    # On écrit les variables dans un fichier caché
+    echo "export CAM1=$CAM1" > ./.camera_env
+    echo "export CAM2=$CAM2" >> ./.camera_env
+    echo "export CAM3=$CAM3" >> ./.camera_env
+    echo "export CAM4=$CAM4" >> ./.camera_env
+    chmod +x ~/.camera_env
 fi
 
 echo "${GREEN}[Success] ENV variables set\n\n${END}"
