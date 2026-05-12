@@ -4,6 +4,8 @@
 rtspAddress: :8554
 logLevel: info
 logDestinations: [stdout]
+readBufferCount: 2048
+writeQueueSize: 2048
 
 paths:
   cam1:

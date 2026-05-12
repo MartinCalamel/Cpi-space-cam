@@ -1,58 +1,45 @@
 #!/bin/bash
-# start_cameras.sh — Pi FUSÉE
-# Lance MediaMTX puis les 3 flux FFmpeg USB
+# start_cameras.sh — Pi FUSÉE (Version Opti)
+# Lance MediaMTX puis les 4 flux FFmpeg via l'encodeur matériel du Pi
 
 source ./.camera_env
 
 MEDIAMTX_DIR="$(dirname "$0")"
 
-# Démarrer MediaMTX en arrière-plan
+# 1. Démarrer MediaMTX en arrière-plan
 "$MEDIAMTX_DIR/mediamtx" "$MEDIAMTX_DIR/mediamtx.yml" &
 MTPID=$!
 echo "MediaMTX démarré (PID $MTPID)"
-sleep 2
+sleep 3  # Un peu plus de temps pour stabiliser le serveur
 
-# CAM 1 — HD Web Camera /dev/video0
-ffmpeg -f v4l2 -input_format mjpeg -video_size 854x480 -framerate 24 \
-  -i ${CAM1} \
-  -c:v libx264 -preset ultrafast -tune zerolatency -b:v 800k -g 48 \
-  -map 0 -f tee \
-  "[f=rtsp:rtsp_transport=tcp]rtsp://localhost:8554/cam1|[f=segment:segment_time=60:segment_format=mp4:strftime=1]/mnt/usb/recordings/cam1/%Y%m%d_%H%M.mp4" \
-  -loglevel warning &
-echo "CAM1 démarrée"
+# Fonction pour lancer FFmpeg (évite la répétition et facilite la maintenance)
+launch_cam() {
+    local DEV=$1
+    local NAME=$2
+    
+    ffmpeg -f v4l2 -input_format mjpeg -video_size 854x480 -framerate 24 \
+      -i "$DEV" \
+      -c:v h264_v4l2m2m -b:v 800k -g 48 \
+      -map 0 -f tee \
+      "[f=rtsp]rtsp://localhost:8554/$NAME|[f=segment:segment_time=60:segment_format=mp4:strftime=1]/mnt/usb/recordings/$NAME/%Y%m%d_%H%M.mp4" \
+      -loglevel warning &
+    echo "$NAME démarrée sur $DEV"
+}
 
-# CAM 2 — Webcam C170 /dev/video2
-ffmpeg -f v4l2 -input_format mjpeg -video_size 854x480 -framerate 24 \
-  -i ${CAM2} \
-  -c:v libx264 -preset ultrafast -tune zerolatency -b:v 800k -g 48 \
-  -map 0 -f tee \
-  "[f=rtsp:rtsp_transport=tcp]rtsp://localhost:8554/cam2|[f=segment:segment_time=60:segment_format=mp4:strftime=1]/mnt/usb/recordings/cam2/%Y%m%d_%H%M.mp4" \
-  -loglevel warning &
-echo "CAM2 démarrée"
+# 2. Lancement des caméras avec l'encodeur matériel
+launch_cam "${CAM1}" "cam1"
+launch_cam "${CAM2}" "cam2"
+launch_cam "${CAM3}" "cam3"
+launch_cam "${CAM4}" "cam4"
 
-# CAM 3 — HD Web Camera /dev/video4
-ffmpeg -f v4l2 -input_format mjpeg -video_size 854x480 -framerate 24 \
-  -i ${CAM3} \
-  -c:v libx264 -preset ultrafast -tune zerolatency -b:v 800k -g 48 \
-  -map 0 -f tee \
-  "[f=rtsp:rtsp_transport=tcp]rtsp://localhost:8554/cam3|[f=segment:segment_time=60:segment_format=mp4:strftime=1]/mnt/usb/recordings/cam3/%Y%m%d_%H%M.mp4" \
-  -loglevel warning &
-echo "CAM3 démarrée"
-
-# CAM 4
-ffmpeg -f v4l2 -input_format mjpeg -video_size 854x480 -framerate 24 \
-  -i ${CAM4} \
-  -c:v libx264 -preset ultrafast -tune zerolatency -b:v 800k -g 48 \
-  -map 0 -f tee \
-  "[f=rtsp:rtsp_transport=tcp]rtsp://localhost:8554/cam4|[f=segment:segment_time=60:segment_format=mp4:strftime=1]/mnt/usb/recordings/cam4/%Y%m%d_%H%M.mp4" \
-  -loglevel warning &
-echo "CAM4 démarrée"
-
+echo "---------------------------------------"
 echo "Flux RTSP disponibles :"
-echo "  rtsp://$(hostname -I | awk '{print $1}'):8554/cam1"
-echo "  rtsp://$(hostname -I | awk '{print $1}'):8554/cam2"
-echo "  rtsp://$(hostname -I | awk '{print $1}'):8554/cam3"
-echo "  rtsp://$(hostname -I | awk '{print $1}'):8554/cam4"
+IP_ADDR=$(hostname -I | awk '{print $1}')
+echo "  rtsp://$IP_ADDR:8554/cam1"
+echo "  rtsp://$IP_ADDR:8554/cam2"
+echo "  rtsp://$IP_ADDR:8554/cam3"
+echo "  rtsp://$IP_ADDR:8554/cam4"
+echo "---------------------------------------"
 
 # Attendre MediaMTX
 wait $MTPID
