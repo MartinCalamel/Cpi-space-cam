@@ -1,0 +1,16 @@
+# mediamtx.yml — Pi FUSÉE
+# USB cameras via FFmpeg publisher
+
+rtspAddress: :8554
+logLevel: info
+logDestinations: [stdout]
+
+paths:
+  cam1:
+    source: publisher
+  cam2:
+    source: publisher
+  cam3:
+    source: publisher
+  cam4:
+    source: publisher
