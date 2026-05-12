@@ -1,0 +1,1 @@
+Setup script and files for rocket cameras
