@@ -17,7 +17,7 @@ ffmpeg -f v4l2 -input_format mjpeg -video_size 854x480 -framerate 24 \
   -i ${CAM1} \
   -c:v libx264 -preset ultrafast -tune zerolatency -b:v 800k -g 48 \
   -map 0 -f tee \
-  "[f=rtsp:rtsp_transport=tcp]rtsp://localhost:8554/cam1|[f=segment:segment_time=60:segment_format=mp4:strftime=1]/mnt/usb/recordings/cam1/%Y%m%d_%H%M.mp4" \
+  "[f=rtsp:rtsp_transport=udp]rtsp://localhost:8554/cam1|[f=segment:segment_time=60:segment_format=mp4:strftime=1]/mnt/usb/recordings/cam1/%Y%m%d_%H%M.mp4" \
   -loglevel warning &
 echo "CAM1 démarrée"
 
@@ -26,7 +26,7 @@ ffmpeg -f v4l2 -input_format mjpeg -video_size 854x480 -framerate 24 \
   -i ${CAM2} \
   -c:v libx264 -preset ultrafast -tune zerolatency -b:v 800k -g 48 \
   -map 0 -f tee \
-  "[f=rtsp:rtsp_transport=tcp]rtsp://localhost:8554/cam2|[f=segment:segment_time=60:segment_format=mp4:strftime=1]/mnt/usb/recordings/cam2/%Y%m%d_%H%M.mp4" \
+  "[f=rtsp:rtsp_transport=udp]rtsp://localhost:8554/cam2|[f=segment:segment_time=60:segment_format=mp4:strftime=1]/mnt/usb/recordings/cam2/%Y%m%d_%H%M.mp4" \
   -loglevel warning &
 echo "CAM2 démarrée"
 
@@ -35,7 +35,7 @@ ffmpeg -f v4l2 -input_format mjpeg -video_size 854x480 -framerate 24 \
   -i ${CAM3} \
   -c:v libx264 -preset ultrafast -tune zerolatency -b:v 800k -g 48 \
   -map 0 -f tee \
-  "[f=rtsp:rtsp_transport=tcp]rtsp://localhost:8554/cam3|[f=segment:segment_time=60:segment_format=mp4:strftime=1]/mnt/usb/recordings/cam3/%Y%m%d_%H%M.mp4" \
+  "[f=rtsp:rtsp_transport=udp]rtsp://localhost:8554/cam3|[f=segment:segment_time=60:segment_format=mp4:strftime=1]/mnt/usb/recordings/cam3/%Y%m%d_%H%M.mp4" \
   -loglevel warning &
 echo "CAM3 démarrée"
 
@@ -44,7 +44,7 @@ ffmpeg -f v4l2 -input_format mjpeg -video_size 854x480 -framerate 24 \
   -i ${CAM4} \
   -c:v libx264 -preset ultrafast -tune zerolatency -b:v 800k -g 48 \
   -map 0 -f tee \
-  "[f=rtsp:rtsp_transport=tcp]rtsp://localhost:8554/cam4|[f=segment:segment_time=60:segment_format=mp4:strftime=1]/mnt/usb/recordings/cam4/%Y%m%d_%H%M.mp4" \
+  "[f=rtsp:rtsp_transport=udp]rtsp://localhost:8554/cam4|[f=segment:segment_time=60:segment_format=mp4:strftime=1]/mnt/usb/recordings/cam4/%Y%m%d_%H%M.mp4" \
   -loglevel warning &
 echo "CAM4 démarrée"
 
