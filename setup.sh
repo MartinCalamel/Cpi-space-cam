@@ -25,10 +25,10 @@ sudo mkdir /mnt/usb/recordings/cam4 >/dev/null
 echo "[INFO] Environnement created !"
 
 echo "[INFO] Getting files... [0/2]"
-curl -o start_cam.sh https://raw.githubusercontent.com/MartinCalamel/Cpi-space-cam/refs/heads/main/start_cam.sh || echo "[failed]"
+curl -o start_cam.sh https://raw.githubusercontent.com/MartinCalamel/Cpi-space-cam/refs/heads/main/start_cam.sh >/dev/null || echo "[failed]"
 chmod +x start_cam.sh
 echo "[INFO] Getting files... [1/2]"
-curl -o mediamtx.yml https://raw.githubusercontent.com/MartinCalamel/Cpi-space-cam/refs/heads/main/mediamtx.yml || echo "[failed]"
+curl -o mediamtx.yml https://raw.githubusercontent.com/MartinCalamel/Cpi-space-cam/refs/heads/main/mediamtx.yml >/dev/null || echo "[failed]"
 echo "[INFO] Getting files... [2/2]\n\n"
 
 echo "[Success] Ended successfully !"
